@@ -1,10 +1,11 @@
 import requests 
 import pandas as pd
 from datetime import datetime
-from API_wrapper import NSEAPIs
+from .API_wrapper import NSEAPIs
 from bs4 import BeautifulSoup
 from functools import wraps
-from exceptions import IllegalArgumentError, DataNotFound
+import pathlib
+from .exceptions import IllegalArgumentError, DataNotFound
 
 class Retrieve:
 
@@ -13,7 +14,8 @@ class Retrieve:
         self.stock_symbols = self.get_stock_symbols()
 
     def get_stock_symbols(self) -> dict:
-        df = pd.read_csv("stocksymbols.csv")
+        HERE = pathlib.Path(__file__).parent
+        df = pd.read_csv(str(HERE)+str("\stocksymbols.csv"))
         stock_symbols = {}
         for i,row in df.iterrows():
             stock_symbols[row["nse"]] = row["nse"].replace("&", "%26")
@@ -54,7 +56,8 @@ class Retrieve:
             res = requests.get(url,headers=headers)
             if res.status_code == 200:
                 return self.extract_data(res.text)
-            raise DataNotFound("Data For this stock Not found")
+            else:
+                raise DataNotFound("Data For this stock Not found")
         else:
             raise DataNotFound("Stock Symbol not Found: Check Stock symbol")
 
@@ -62,5 +65,6 @@ class Retrieve:
         url = self.api_url.historical_stock_data.format(symbol, from_date, to_date)
         res = requests.get(url, headers=self.api_url.stock_header)
         return res.json()
-    
+
+
 

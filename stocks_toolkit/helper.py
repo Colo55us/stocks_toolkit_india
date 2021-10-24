@@ -1,5 +1,6 @@
 import pandas as pd
-from exceptions import DataNotFound
+from .exceptions import DataNotFound
+import pathlib
 
 class Helper:
 
@@ -7,7 +8,8 @@ class Helper:
         self.nse_bse, self.bse_nse = self.fetch_symbols()    
 
     def fetch_symbols(self) -> tuple:
-        df = pd.read_csv("stocksymbols.csv")
+        HERE = pathlib.Path(__file__).parent
+        df = pd.read_csv(str(HERE)+str("\stocksymbols.csv"))
         nse_bse = {}
         bse_nse = {}
         for i,row in df.iterrows():

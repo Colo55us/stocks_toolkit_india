@@ -1,5 +1,5 @@
 import talib
-from retrieval_layer import Retrieve
+from .retrieval_layer import Retrieve
 import pandas as pd
 
 class Candle_analysis:
@@ -11,7 +11,7 @@ class Candle_analysis:
         return talib.get_function_groups()['Pattern Recognition']
 
     def filter_technicals(self,df) -> pd.DataFrame:
-        return pd.DataFrame({"open":list(df["Open Price"]), "close":list(df["Close Price"]), "high":list(df["High Price"]), "low":list(df["Low Price"])})
+        return pd.DataFrame({"open":list(df["Open Price"]), "close":list(df["Close Price"]), "high":list(df["High Price"]), "low":list(df["Low Price"]),"date":list(df["Date"])})
 
     def find_candles(self, symbol, from_date, to_date) -> pd.DataFrame:
         data = self.filter_technicals(self.retrieve_stocks.stock_data(symbol, from_date, to_date))
@@ -25,4 +25,3 @@ class Candle_analysis:
                     candles_found[i].append(candle+":Bearish")
         data["candles_found"] = candles_found
         return data
-
